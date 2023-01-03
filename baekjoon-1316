@@ -6,7 +6,7 @@ int main()
 {
     int n;
     int cnt;
-    string str;
+    String str;
 
     cin >> n;
 
