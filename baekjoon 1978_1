@@ -1,0 +1,28 @@
+#include<iostream>
+using namespace std;
+
+//기존 풀이와는 다른 풀이 방법
+int main()
+{
+    int N, rst = 0;
+    int tmp, cnt = 0;
+    cin >> N;  // 소수의 개수
+
+    for(int i = 0; i < N; i++)
+    {
+        cin >> tmp;
+        for(int div = 1; div <= tmp; div++)
+        {
+            if(tmp % div == 0) // 임시로 하려는 수(설명 보충하기--공부) 와 나누는 수가 떨어질 때
+            {
+                cnt++;
+            }
+        }
+        if(cnt == 2) //tmp가 소수일 때
+        {
+            rst++;
+        }
+        cnt = 0;
+    }
+    cout << rst << '\n';
+}
