@@ -1,0 +1,29 @@
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    int n, rst = 0;
+    int tmp, cnt = 0;
+
+    cin >> n;
+
+    for(int i = 0 ; i < n; i++)
+    {
+        cin >> tmp; // tmp = div와 나누는 수 
+
+        for(int div = 1; div <= tmp; div++)
+        {
+            if(tmp % div == 0)
+            {
+                cnt++;
+            }
+        }
+        if(cnt == 2) // tmp가 소수라면
+        {
+            rst++;
+        }
+        cnt == 0;
+    }
+    cout << rst << '\n';
+}
