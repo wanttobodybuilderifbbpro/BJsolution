@@ -1,0 +1,129 @@
+#include<iostream>
+#include<utility>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+//Cautious: 한 경찰차가 하나의 사건을 처리하고
+//원래대로 돌아가지 않으며 그 자리에서 다음 사건을 처리함
+//사건들은 같은 장소에서 여러번 일어날 수 있음. 
+
+//brute-force(일일이 대입법-내가 작명)로 접근하려고 하면 2^1000 이 됨
+//값이 너무 크다. 그렇다면 이걸 좀 더 간단하게 접근하는 방법은?
+
+
+
+
+ int n, w = 0;
+   vector<pair<int, int>> p;
+   int store[1010][1010];
+   int police_store[1010][1010];
+   //0 not visit
+
+   int calculate_distance(int police, int target, int start){
+    //start :
+    // 0 : 2 cab have missions.
+    // 1 : police is in (1,1).
+    // 2 : police is in (n, n);
+
+    int police_x, police_y, target_x, target_y;
+    if(start == 1)
+    {
+        police_x = 1;
+        police_y = 1;
+    }
+    else if(start == 2)
+    {
+        police_x = n;
+        police_y = n;
+    }
+    else
+    {
+        police_x = p[police-1].first;
+        police_y = p[police-1].second;
+    }
+    target_x = p[target-1].first;
+    target_y = p[target-1].second;
+    return abs(police_x-target_x) + abs(police_y-target_y);
+   }
+
+   int find_distance(int police1, int police2){
+    /*
+    두 경찰차가 police1, police2 사건을 마지막으로 맡았을 때
+    이후로 최소 비용 출력
+    e.g) find_distance(3,5)라고 하면
+    6번째 사건을 처리할 차례
+
+    두번째 경찰차가 6번사건을 맡아야한다. = find_distance(3,6) + 5->6 거리
+
+    그리고 두 경찰차중 어느 경찰차가 움직여야하는 지를
+    police_store[police1][police2]에 저장한다.(1 or 2)
+    */
+
+    // cout << police1 << " | " << police2 << endl;
+    if(police1 == w || police2 == w){
+        return 0;
+    }
+
+    int tmp1, tmp2, move;
+
+    move = max(police1, police2) + 1;
+    if(store[police1][police2] != -1){
+        return store[police1][police2];
+    }
+    if(police1 == 0){
+        tmp1 = find_distance(move,police2) + calculate_distance(police1, move, 1);
+    }
+    else{
+        tmp1 = find_distance(move,police2) + calculate_distance(police1, move, 0);
+    }
+    if(police2 == 0){
+        tmp2 = find_distance(police1,move) + calculate_distance(police2, move, 2);
+    }
+    else{
+        tmp2 = find_distance(police1,move) + calculate_distance(police2, move, 0);
+    }
+
+    store[police1][police2] = min(tmp1,tmp2);
+
+    if(tmp1 < tmp2){
+        police_store[police1][police2] = 1;
+    }
+    else{
+        police_store[police1][police2] = 2;
+    }
+    return min(tmp1,tmp2);
+   }
+int main(){
+    int tmp1,tmp2;
+    cin >> n;
+    cin >> w;
+    for(int i=0;i<w;i++){
+        cin >> tmp1;
+        cin >> tmp2;
+        p.push_back(make_pair(tmp1,tmp2));
+    }
+
+    for(int i=0;i<1010;i++){
+        for(int j=0;j<1010;j++){
+            store[i][j] = -1;
+            police_store[i][j] = -1;
+        }
+    }
+
+    cout << find_distance(0,0) << endl;
+
+    int x = 0;
+    int y = 0;
+    
+    for(int i=0;i<w;i++){
+        cout << police_store[x][y] << endl;
+        if(police_store[x][y] == 1){
+            x = i+1;
+        }
+        else{
+            y = i+1;
+        }
+    }
+}
